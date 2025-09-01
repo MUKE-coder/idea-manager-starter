@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  ideas Idea[]
+
+  @@map("categories")
+}
+
+model Idea {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("ideas")
+}
